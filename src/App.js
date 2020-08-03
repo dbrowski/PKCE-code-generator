@@ -152,6 +152,7 @@ export default function App() {
               container
               direction="column"
               alignItems="stretch"
+              justify="flex-start"
               xs={12}
               style={{ flex: "10 0 auto" }}
             >
@@ -225,7 +226,7 @@ export default function App() {
                 <Grid item xs={12}>
                   <Box
                     height="100%"
-                    minHeight="10vh"
+                    minHeight="1vh"
                     width="100%"
                     minWidth="100%"
                     maxWidth="100%"
@@ -252,7 +253,7 @@ export default function App() {
                 </Typography>
                 <Box
                   height="100%"
-                  minHeight="10vh"
+                  minHeight="1vh"
                   marginTop="0rem"
                   marginBottom="0rem"
                 >
@@ -270,7 +271,7 @@ export default function App() {
                 <Typography>Code-Challenge-Method</Typography>
                 <Box
                   height="100%"
-                  minHeight="10vh"
+                  minHeight="1vh"
                   marginTop="0rem"
                   marginBottom="0rem"
                 >
