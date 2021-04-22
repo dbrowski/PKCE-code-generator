@@ -1,3 +1,7 @@
+This is a React app for generating PKCE code verifiers and code challenges. Includes support for SHA-256.
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
