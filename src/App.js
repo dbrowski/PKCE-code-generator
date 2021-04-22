@@ -92,13 +92,14 @@ export default function App() {
   };
 
   const generateRandomStr = function (length) {
+    // base64url safe chars
     const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+~";
     return CryptoRandomString({ length: length, characters: chars });
   };
 
   const generateCodeVerifier = () => {
-    let randStr = generateRandomStr(numChars);
+    const randStr = generateRandomStr(numChars);
     setCodeVerifier(randStr);
     return randStr;
   };
