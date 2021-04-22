@@ -76,19 +76,19 @@ export default function App() {
   const [codeChallengeMethod, setCodeChallengeMethod] = useState("S256");
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     let cVerifier = generateCodeVerifier();
     generateCodeChallenge(cVerifier);
-    event.preventDefault();
   };
 
   const handleNumCharsChange = (event, newValue) => {
-    setNumChars(newValue);
     event.preventDefault();
+    setNumChars(newValue);
   };
 
   const handleCodeChallengeMethodChange = (event, newValue) => {
-    setCodeChallengeMethod(newValue);
     event.preventDefault();
+    setCodeChallengeMethod(newValue);
   };
 
   const generateRandomStr = function (length) {
@@ -108,7 +108,6 @@ export default function App() {
       const hash = crypto.createHash("sha256");
       hash.update(cVerifier);
       let encrypted = hash.digest();
-      console.log(encrypted);
       setCodeChallenge(base64url(encrypted.toString("hex"), "hex"));
     } else {
       setCodeChallenge(cVerifier);
