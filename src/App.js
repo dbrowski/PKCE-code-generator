@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
@@ -14,9 +13,9 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import CryptoJS from "crypto-js";
-import base64url from "base64url";
+import crypto from "crypto";
 import CryptoRandomString from "crypto-random-string";
+import base64url from "base64url";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,7 +92,9 @@ export default function App() {
   };
 
   const generateRandomStr = function (length) {
-    return CryptoRandomString({ length: length });
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    return CryptoRandomString({ length: length, characters: chars });
   };
 
   const generateCodeVerifier = () => {
@@ -104,8 +105,11 @@ export default function App() {
 
   const generateCodeChallenge = (cVerifier) => {
     if (codeChallengeMethod === "S256") {
-      let encrypted = CryptoJS.SHA256(base64url(cVerifier));
-      setCodeChallenge(encrypted.toString(CryptoJS.enc.Hex));
+      const hash = crypto.createHash("sha256");
+      hash.update(cVerifier);
+      let encrypted = hash.digest();
+      console.log(encrypted);
+      setCodeChallenge(base64url(encrypted.toString("hex"), "hex"));
     } else {
       setCodeChallenge(cVerifier);
     }
