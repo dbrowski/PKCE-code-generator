@@ -211,7 +211,6 @@ export default function App() {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  className={classes.submit}
                 >
                   Generate New
                 </Button>
