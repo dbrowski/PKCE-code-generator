@@ -70,46 +70,53 @@ export default function App() {
   const classes = useStyles();
 
   // State variables and setters.
-  const [numChars, setNumChars] = useState(128);
+  const [numBytes, setNumBytes] = useState(96);
   const [codeVerifier, setCodeVerifier] = useState("");
   const [codeChallenge, setCodeChallenge] = useState("");
   const [codeChallengeMethod, setCodeChallengeMethod] = useState("S256");
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     let cVerifier = generateCodeVerifier();
     generateCodeChallenge(cVerifier);
   };
 
   const handleNumCharsChange = (event, newValue) => {
     event.preventDefault();
-    setNumChars(newValue);
+    event.stopPropagation();
+    setNumBytes(newValue);
   };
 
   const handleCodeChallengeMethodChange = (event, newValue) => {
     event.preventDefault();
+    event.stopPropagation();
     setCodeChallengeMethod(newValue);
   };
 
   const generateRandomStr = function (length) {
     // base64url safe chars
     const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+~";
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
     return CryptoRandomString({ length: length, characters: chars });
   };
 
   const generateCodeVerifier = () => {
-    const randStr = generateRandomStr(numChars);
-    setCodeVerifier(randStr);
-    return randStr;
+    // const randStr = generateRandomStr(numBytes);
+    const randBytes = crypto.randomBytes(numBytes);
+    const base64URLCodeVerifier = base64url(randBytes);
+    setCodeVerifier(base64URLCodeVerifier);
+    return base64URLCodeVerifier;
   };
 
   const generateCodeChallenge = (cVerifier) => {
     if (codeChallengeMethod === "S256") {
       const hash = crypto.createHash("sha256");
       hash.update(cVerifier);
-      let encrypted = hash.digest();
-      setCodeChallenge(base64url(encrypted.toString("hex"), "hex"));
+      const encrypted = hash.digest();
+      const encryptedHex = encrypted.toString("hex");
+      const base64urlified = base64url(encryptedHex, "hex");
+      setCodeChallenge(base64urlified);
     } else {
       setCodeChallenge(cVerifier);
     }
@@ -159,7 +166,9 @@ export default function App() {
               style={{ flex: "10 0 auto" }}
             >
               <Grid item xs={12} style={{ flex: "1 0 auto" }}>
-                <Typography>Number of Characters</Typography>
+                <Typography>
+                  Number of Random Bytes to Use to Generate Code Verifier
+                </Typography>
 
                 <Box style={{ paddingTop: "30px" }}>
                   <Slider
@@ -168,9 +177,9 @@ export default function App() {
                       track: classes.track,
                       valueLabel: classes.valueLabel,
                     }}
-                    value={numChars}
-                    min={43}
-                    max={128}
+                    value={numBytes}
+                    min={32}
+                    max={96}
                     onChange={handleNumCharsChange}
                     valueLabelDisplay="on"
                     aria-labelledby="continuous-slider"
@@ -220,8 +229,8 @@ export default function App() {
               <Grid item container xs={12} style={{ flex: "10 0 auto" }}>
                 <Grid item xs={12}>
                   <Typography>
-                    Code-Verifier ({codeVerifier ? codeVerifier.length : 0}{" "}
-                    chars)
+                    Code-Verifier (base64url encoded,{" "}
+                    {codeVerifier ? codeVerifier.length : 0} chars)
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -249,8 +258,8 @@ export default function App() {
               </Grid>
               <Grid item xs={12} style={{ flex: "10 0 auto" }}>
                 <Typography>
-                  Code-Challenge ({codeChallenge ? codeChallenge.length : 0}{" "}
-                  chars)
+                  Code-Challenge (base64url encoded,{" "}
+                  {codeChallenge ? codeChallenge.length : 0} chars)
                 </Typography>
                 <Box
                   height="100%"
